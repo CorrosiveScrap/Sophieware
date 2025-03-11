@@ -1,0 +1,33 @@
+This is the file where all settings for the main process are stored.
+
+
+GENERAL
+create images
+false
+
+create videos
+false
+
+create audio
+false
+
+Amount of popups
+all
+
+creation interval
+200
+
+create links
+false
+
+use random creation interval
+false
+
+random interval one
+2
+
+random interval two
+5
+
+create text prompts
+true

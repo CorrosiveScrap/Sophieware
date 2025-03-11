@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            background-image: url('img/indexBackground.png');
+            background-repeat: repeat;
+            color: white;
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 2em;
+        }
+        textarea {
+            position: absolute;
+            top:0px;
+            left:0px;
+            opacity: 0;
+            width: 10000px;
+            height: 10000px;
+        }
+
+        #shownTextInput {
+            background: rgb(30, 30, 30);
+            padding-top: 5px;
+            padding-left: 15px;
+            translate: -10px;
+            width: 100%;
+        }
+
+        #backlogDisplay::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="startArea" style="display: block;">
+        <center>
+            <h1>Write lines</h1>
+            Phrase <input id="customPhraze" type="text" style="width: 200px;" placeholder="I belong to Princess Sophie."> <br><br>
+            Amount of lines: <input id="customLineAmount" type="number" style="width: 50px;" placeholder="10"> <br><br>
+            Extra lines per mistake: <input id="customMistakeLines" type="number" style="width: 50px;" placeholder="1"> <br><br>
+            Money owed per mistake: <input id="customMoneyPerMistake" type="number" style="width: 50px;" placeholder="5"> <br><br>
+            <button id="startButton">Start</button>
+        </center>
+    </div>
+    <div style="background-color: rgba(0, 0, 0, 0.524); position: fixed; top: 0; left: 0; height: 100%; width: 100%; z-index: -5;"></div>
+    <div id="playArea" style="display: block; display: none;">
+        <center><h1><div id="sentence">Sentence</div><div id="amountOfLines">6</div></h1></center>
+            <div id="backlogContainer"
+                style="display: flex; position: absolute; flex-direction: column; height: 100%; width: 100%; top: 0px; z-index: -1;">
+                <div id="backlog"
+                    style="flex-basis: 95%; font-size: 2em; display:flex; align-items: flex-end; padding-bottom: 2%; overflow: hidden;">
+                    <div id="backlogDisplay" style="flex-grow: 1; overflow-y: auto; max-height: 100%; width: 100%;"></div>
+                </div>
+                <div id="shownTextInput" style="flex-basis: 5%; font-size: 2em;"></div>
+            </div>
+        <textarea id="textInput"></textarea>
+    </div>
+    <div id="finishArea" style="display: none;">
+        <center>
+            <h1 id="">Congrats :D</h1>
+            <p id="tally">You made x mistakes and owe $x</p>
+            <button onclick="window.close()">Close</button>
+        </center>
+    </div>
+
+    <script>
+        let phrase = 'I belong to Princess Sophie.';
+        let amount = 10;
+        let trueAmount = amount;
+        let punishment = 1;
+
+        let changePerMistake = true;
+        let mistakeCharge = 5;
+        let chargePerLine = true;
+        let lineCharge = 1;
+        let linesWriten = 0;
+        let amountOwed = 0;
+
+
+        let keyLogging = false;
+        const specialKeys = [
+            'Shift', 'CapsLock', 'Control', 'Alt', 'Meta', 'Tab', 'Escape',
+            'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', 'Backspace'
+        ];
+
+        let slicedPhrase = [];
+
+        console.log(phrase.slice(0, 1))
+
+        
+
+        let userPhrase = '';
+        let mistakes = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('startButton').addEventListener('click', () => {
+                document.getElementById('startArea').style.display = 'none'
+                if (document.getElementById('customPhraze').value) { phrase = document.getElementById('customPhraze').value }
+                if (document.getElementById('customLineAmount').value) { amount = Number(document.getElementById('customLineAmount').value) }
+                if (document.getElementById('customMistakeLines').value) { punishment = Number(document.getElementById('customMistakeLines').value) }
+                if (document.getElementById('customMoneyPerMistake').value) { mistakeCharge = Number(document.getElementById('customMoneyPerMistake').value) }
+                trueAmount = amount;
+
+                for (let i = 0; i < phrase.length; i++) {
+                    temp = phrase.slice(i, i + 1)
+                    slicedPhrase.push(temp)
+                }
+
+                document.getElementById('sentence').innerHTML = phrase
+                document.getElementById('amountOfLines').innerHTML = amount
+                
+                document.getElementById('playArea').style.display = 'block'
+            })
+
+            document.getElementById('textInput').addEventListener('focus', () => {
+                keyLogging = true
+            })
+            document.getElementById('textInput').addEventListener('blur', () => {
+                keyLogging = false
+            })
+
+            document.addEventListener('keyup', (e) => {
+                if (keyLogging == true && !specialKeys.includes(e.key)) {
+                    userPhrase += e.key
+                    document.getElementById('shownTextInput').innerHTML = userPhrase
+
+                    if (slicedPhrase[userPhrase.length - 1] != e.key) {
+                        temp = userPhrase.slice(userPhrase.length - 1, userPhrase.length)
+                        temp2 = userPhrase.slice(0, userPhrase.length -1)
+                        document.getElementById('backlogDisplay').innerHTML += temp2 + `<div style="background: red; display: inline;">${temp}</div><br>`
+
+                        userPhrase = ''
+                        document.getElementById('textInput').value = ''
+                        document.getElementById('shownTextInput').innerHTML = ''
+                        amount = amount + punishment
+                        console.log(amount)
+                        document.getElementById('amountOfLines').innerHTML = amount
+                        scrollToBottom()
+                        mistakes++
+
+                        if (changePerMistake == true) {
+                            amountOwed = amountOwed + mistakeCharge
+                        }
+                    } else if (userPhrase.length == slicedPhrase.length) {
+                        document.getElementById('backlogDisplay').innerHTML += userPhrase += '<br>'
+                        userPhrase = ''
+                        document.getElementById('textInput').value = ''
+                        document.getElementById('shownTextInput').innerHTML = ''
+                        amount--
+                        document.getElementById('amountOfLines').innerHTML = amount
+                        scrollToBottom()
+                        linesWriten++
+
+                        if (chargePerLine == true) {
+                            amountOwed = amountOwed + lineCharge
+                        }
+                        if (amount <= 0) {
+                            document.getElementById('finishArea').style.display = 'block'
+                            document.getElementById('playArea').style.display = 'none'
+                            document.getElementById('tally').innerHTML = `
+                            You made ${mistakes} mistakes. <br>
+                            You accumilated ${mistakes * punishment} extra lines for a total of ${trueAmount + (mistakes * punishment)} line writen. <br>
+                            The mistake charge is $${mistakeCharge} each.  <br>
+                            Meaning you owe $${mistakes * mistakeCharge}. Pay up.  <br>`
+                        }
+                    }
+                    //console.log(userPhrase)
+                }
+            })
+            function scrollToBottom() {
+                const backlogDisplay = document.getElementById('backlogDisplay');
+                backlogDisplay.scrollTop = backlogDisplay.scrollHeight;
+            }
+        })
+        
+    </script>
+</body>
+</html>

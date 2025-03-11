@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--
+    <meta http-equiv="content-Security-Policy" content="script-src 'self'">
+    -->
+    <link rel="stylesheet" href="index.css" type="text/css">
+    <title>Splash screen</title>
+</head>
+<body>
+
+    
+<div style="background-color: rgba(0, 0, 0, 0.524); position: fixed; top: 0; left: 0; height: 100%; width: 100%; z-index: -5;"></div>
+    <div id="Home" class="page">
+        <h1 id="spashScreenTitle">SOPHIEWARE</h1>
+        <button class="glass" id="startButton">Start</button> <br>
+        <button class="glass" onclick="changePage(this), changeWindowSize()">Settings</button> <br>
+        <button class="glass" onclick="changePage(this)">Social</button> <br>
+        <button class="glass" onclick="changePage(this)">Extra</button> <br>
+        <button class="glass" id="quitButton">Exit</button> <br>
+        <br>
+        <div id="splashScreenCopyMark">&copy; Corrosive scrap</div>
+    </div>
+
+    <!--Embaracingly it took me around an hour to make this work using flex and since I know the size of the window I did not have to do it this way.-->
+    <div id="Settings" class="page hidden">
+        <div class="settingsFlexContainer">
+            <div class="settingsSidebar">
+                <button class="Button02" onclick="changeSubpage(this)">General</button>
+                <button class="Button02" onclick="changeSubpage(this)">Window behaviour</button>
+                <button class="Button02" onclick="changeSubpage(this)">App control</button>
+            </div>
+            <div class="settingsContentsContainer">
+                <div class="subPage" id="General">
+                    <div style="display: flex; font-size: 22px; flex-wrap: wrap;">
+                        <h1 style="flex-basis: 100%;">General</h1>
+                        <div style="flex-basis: 25%; text-align: left; margin-left: 5px;">
+                            <b>Type of media</b> <br>
+                            <input id="settingCreateImages" type="checkbox" style="margin-left: 15px;"> Create images <br>
+                            <input id="settingCreateVideos" type="checkbox" style="margin-left: 15px;"> Create videos <br>
+                            <input id="settingCreateAudios" type="checkbox" style="margin-left: 15px;"> Create audio <br>
+                            <input id="settingOpenLinks" type="checkbox" style="margin-left: 15px;"> Open links <br>
+                            <input id="settingTextPrompts" type="checkbox" style="margin-left: 15px;"> Text prompts <br>
+                        </div>
+                        <div style="flex-basis: 25%; text-align: left; margin-left: 5px;">
+                            <b>Amount of popups</b> <br>
+                            <input id="settingCreateOne" name="popupAmount" type="radio" style="margin-left: 15px;"> Create one <br>
+                            <input id="settingCreateAll" name="popupAmount" type="radio" style="margin-left: 15px;"> Create all <br>
+                            <input id="settingCreateAmount" name="popupAmount" type="radio" style="margin-left: 15px;"> Create <input id="settingsCreateAmountValue" type="number" max="50" min="1" style="width: 35px;" placeholder="10" onblur="if (this.value > 50) { this.value = 50; } else if (this.value < 1) { this.value = 1; }"> <br>
+                        </div>
+                        <div style="flex-basis: 45%; text-align: left; margin-left: 5px;">
+                            <b>Lifetime</b> <br>
+                            <input id="settingPopupLifetimeToggle" type="checkbox" style="margin-left: 15px;"> Enable popup lifetime <br>
+                            <div style="margin-left: 15px;">Popups last for <input id="settingPopupLifetime" type="number" min="1" value="1" style="width: 60px;" placeholder="30" onblur="if (this.value < 1) { this.value = 1; }"> seconds</div> <br>
+                        </div>
+
+                        <div style="flex-basis: 60%; text-align: left; margin-left: 5px; margin-top: 50px;">
+                            <b>Creation inteval</b> <br>
+                            <input id="settingCreationIntervalToggle" type="checkbox" style="margin-left: 15px;" onclick="
+                            if(this.checked) {
+                                document.getElementById('settingCreationIntervalTypeTwo').style.display = 'block'
+                                document.getElementById('settingCreationIntervalTypeOne').style.display = 'none'
+                            } else {
+                                document.getElementById('settingCreationIntervalTypeTwo').style.display = 'none'
+                                document.getElementById('settingCreationIntervalTypeOne').style.display = 'block'
+                            }"> Random appearance time <br>
+                            <div style="margin-left: 15px;" id="settingCreationIntervalTypeOne">Popups appear every <input id="settingCreationIntervalInput" type="number" min="1" style="width: 35px;" placeholder="2" onblur="if (this.value < 1) { this.value = 1; }"> seconds</div>
+                            <div style="margin-left: 15px;" id="settingCreationIntervalTypeTwo">
+                                Popups appear between 
+                                <input id="settingRandomCreationIntervalInputOne" type="number" min="1" style="width: 35px;" placeholder="2" onblur="if (this.value < 1) { this.value = 1; }"> 
+                                and
+                                <input id="settingRandomCreationIntervalInputTwo" type="number" min="1" style="width: 35px;" placeholder="2" onblur="if (this.value < 1) { this.value = 1; }">
+                                seconds
+                            </div>
+                        </div>
+                        <div style="flex-basis: 35%; text-align: left; margin-left: 5px; margin-top: 50px;">
+                            <b>Movement</b> <br>
+                            <input id="settingWindowBounce" type="checkbox" style="margin-left: 15px;"> Popups bounce
+                        </div>
+
+                        <div style="flex-basis: 25%; text-align: left; margin-left: 5px; margin-top: 50px;">
+                            <b>Other</b> <br>
+                            <input id="settingLaunchOnStartUp" type="checkbox" style="margin-left: 15px;"> Launch on startup <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="subPage hidden" id="Window behaviour">
+                    <div style="display: flex; font-size: 22px; flex-wrap: wrap;">
+                        <h1 style="flex-basis: 100%;">Window behaviour</h1>
+                        <div style="flex-basis: 50%; text-align: left; margin-left: 5px; outline: 1px solid white;">
+                            <b>Overlays</b> <br>
+                            <input id="settingCaptionContent" type="checkbox" style="margin-left: 15px;"> Captions<br>
+                            <input id="settingBlurContent" type="checkbox" style="margin-left: 15px;"> Blur <br>
+                            <div id="settingBlurOpacityDisplay" style="margin-left: 15px;">Blur opacity: 100</div>
+                            <input type="range" id="settingBlurOpacity" style="margin-left: 15px; margin-bottom: 5px; cursor: pointer;" max="100" min="1" value="100" oninput="document.getElementById('settingBlurOpacityDisplay').innerHTML = `Blur opacity: ${this.value}`"> <br>
+                            <input id="settingSpiralContent" type="checkbox" style="margin-left: 15px;"> Spirals <br>
+                            <div id="settingSpiralOpacityDisplay" style="margin-left: 15px;">Spiral opacity: 20</div>
+                            <input type="range" id="settingSpiralOpacity" style="margin-left: 15px; margin-bottom: 5px; cursor: pointer;" max="100" min="1" value="20" oninput="document.getElementById('settingSpiralOpacityDisplay').innerHTML = `Spiral opacity: ${this.value}`"> <br>
+                            
+                        </div>
+                        <div style="flex-basis: 30%; text-align: left; margin-left: 5px;">
+                            <b>Video windows</b> <br>
+                            <input id="settingVideoLoop" type="checkbox" style="margin-left: 15px;"> Loop <br>
+                            <input id="settingVideoUnmute" type="checkbox" style="margin-left: 15px;"> Unmute <br>
+                            <input id="settingVideoCloseAfterPlay" type="checkbox" style="margin-left: 15px;"> Close after play <br>
+                            <input id="settingVideoChangeAfterPlay" type="checkbox" style="margin-left: 15px;"> Change after play <br>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subPage hidden" id="App control">
+                    <div style="display: flex; font-size: 22px; flex-wrap: wrap;">
+                        <h1 style="flex-basis: 100%;">App control</h1>
+                        <div style="flex-basis: 50%; text-align: left; margin-left: 5px;">
+                            <b>Global hotkeys</b> <br>
+                            <p>
+                                <b>CTRL+SHIFT+Q</b> <br>
+                                -Quit the application
+                                <br><br>
+                                <b>CTRL+SHIFT+S</b> <br>
+                                -Display the splash screen
+                                <br><br>
+                                <b>CTRL+SHIFT+F</b> <br>
+                                -Freeze the poopup timer
+                                <br><br>
+                                <b>CTRL+SHIFT+R</b> <br>
+                                -Resume the popup timer
+                                <br><br>
+                                <b>CTRL+SHIFT+C</b> <br>
+                                -Clear all popups from the screen
+                                <br><br>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settingsContentsButtons">
+                    <button onclick="changePage(this)">Home</button>
+                    <button id="saveSettings" onclick="this.innerHTML = 'Home', changePage(this), this.innerHTML = 'Save'">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="Social" class="page hidden">
+        <h1>Social</h1>
+        <div class="settingsContentsButtons">
+            <button id="socialLink01">Throne</button> <br>
+            <button id="socialLink02">X / Twitter</button> <br>
+            <button id="socialLink03">Ai chat bot</button> <br>
+            <button id="socialLink04">Wheel spin</button> <br>
+        </div>
+        <br>
+        <button onclick="changePage(this)">Home</button>
+    </div>
+
+    <div id="Extra" class="page hidden">
+        <h1>Extra</h1>
+        <div class="settingsContentsButtons">
+            <button id="extraLink01">Write lines</button> <br>
+            <button id="extraLink02">Wheel spin</button> <br>
+            <button id="extraLink03">Patches</button> <br>
+        </div>
+        <br>
+        <button onclick="changePage(this)">Home</button>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>

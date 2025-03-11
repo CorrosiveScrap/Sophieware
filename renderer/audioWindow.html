@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    video {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    button {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        z-index: 100;
+    }
+</style>
+
+<body>
+    <center>
+        <video alt="Error" src="" id="background" autoplay></video>
+        <button onclick="window.close()">Quit</button>
+    </center>
+
+    <script>
+        const audio = JSON.parse(localStorage.getItem('sophiewareAudio'))
+
+            //Replace the source of the background image with the newly created path
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('background').src = `popupAudio/${audio[Math.floor(Math.random() * audio.length)]}`
+            })
+
+
+            //Set window size to scale the original image up and down
+            window.resizeTo(500, 500)
+
+            //Fit the window to the image and place it somewhere on the screen
+            document.getElementById('background').onload = () => {
+                window.resizeTo(document.getElementById('background').width, document.getElementById('background').height);
+                const totalScreenWidth = window.screen.availWidth + Math.abs(window.screenLeft);
+                const totalScreenHeight = window.screen.availHeight + Math.abs(window.screenTop);
+
+                const randomX = Math.floor(Math.random() * totalScreenWidth) //- window.outerWidth / 2;
+                const randomY = Math.floor(Math.random() * totalScreenHeight) //- window.outerHeight / 2;
+
+                window.moveTo(randomX, randomY);
+            }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body {
+        user-select: none;
+    }
+
+    video {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+    }
+    img {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    button {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        z-index: 100;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0px;
+        left:0px;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+</style>
+
+<body>
+    <center>
+        <h3 id="caption" style="z-index: 6; position: relative;"></h3>
+        <div id="contentBlur" class="overlay" style="backdrop-filter: blur(0px);"></div>
+        <img id="contentSpirals" style="z-index: 7; opacity: 20%; display: none; -webkit-user-drag: none;" src="">
+        <video
+            alt="Error"
+            src=""
+            id="background"
+            autoplay
+        ></video>
+        <button onclick="window.close()">Submit</button>
+    </center>
+
+    <script>
+        const videos = JSON.parse(localStorage.getItem('sophiewareVideo'))
+        console.log(videos)
+        const spirals = JSON.parse(localStorage.getItem('sophiewareSpirals'))
+
+        if (localStorage.getItem('sophiewareLoopVideos') == 'true') { document.getElementById('background').loop  = true }
+        if (localStorage.getItem('sophiewareMuteVideos') == 'true') { document.getElementById('background').muted = true }
+        if (localStorage.getItem('sophiewareVideoCloseAfterPlay') == 'true') { 
+            document.getElementById('background').addEventListener('ended', () => {
+                window.close()
+            })
+        } else if (localStorage.getItem('sophiewareVideoChangeAfterPlay') == 'true') {
+            document.getElementById('background').addEventListener('ended', () => {
+                showVideo()
+            })
+        }
+
+
+        if (localStorage.getItem('sophiewarePopupLifetimeToggle') == 'true') {
+            let lifetime = parseInt(localStorage.getItem('sophiewarePopupLifetime'))
+
+            cls = setInterval(() => {
+                lifetime--
+                if (lifetime <= 0) {
+                    window.close()
+                }
+            }, 1000)
+        }
+
+        //Replace the source of the background image with the newly created path
+        document.addEventListener('DOMContentLoaded', () => {
+            showVideo()
+
+            if (localStorage.getItem('sophiewareSpiralContent') == 'true') {
+                document.getElementById('contentSpirals').style.display = 'block'
+                document.getElementById('contentSpirals').src = `popupSpirals/${spirals[Math.floor(Math.random() * spirals.length)]}`
+            }
+        })
+
+        function showVideo() {
+            document.getElementById('background').src = `popupVideos/${videos[Math.floor(Math.random() * videos.length)]}`
+        }
+
+
+        //Set window size to scale the original image up and down
+        window.resizeTo(500, 500)
+
+        if (localStorage.getItem('sophiewareBlurContent') == 'true') {
+            document.getElementById('contentBlur').style.backdropFilter = 'blur(5px)'
+        }
+
+        
+        window.resizeTo(600, 600)
+
+        //Fit the window to the video cutting out any blank space and place it in a random position on the screen
+        let loaded = false
+        document.getElementById('background').addEventListener('loadeddata', () => {
+            if (loaded == true) {return}
+            loaded = true
+            window.resizeTo(document.getElementById('background').offsetWidth, document.getElementById('background').offsetHeight);
+
+            const totalScreenWidth = window.screen.availWidth + Math.abs(window.screenLeft);
+            const totalScreenHeight = window.screen.availHeight + Math.abs(window.screenTop);
+
+            const randomY = Math.floor(Math.random() * window.screen.height)
+            const randomX = Math.floor(Math.random() * window.screen.width)
+
+            window.moveTo(randomX, randomY)
+
+            let bouncingWindow = localStorage.getItem('sophiewareWindowBounce');
+        if (bouncingWindow === 'true') {
+            let windowY = randomY
+            let windowX = randomX
+
+            let Ydirection = 'up'
+            let Xdirection = 'right'
+
+            let speed = 3;
+
+            function moveWindow() {
+                window.moveTo(windowX, windowY);
+
+                if (Ydirection == 'up') {
+                    windowY = windowY - speed
+                    if (windowY <= 0) {
+                        Ydirection = 'down'
+                    }
+                } else if (Ydirection == 'down') {
+                    windowY = windowY + speed
+                    if (windowY >= totalScreenHeight - (window.innerHeight + 23)) {
+                        Ydirection = 'up'
+                    }
+                }
+
+
+                if (Xdirection == 'left') {
+                    windowX = windowX - speed
+                    if (windowX <= 0) {
+                        Xdirection = 'right'
+                    }
+                } else if (Xdirection == 'right') {
+                    windowX = windowX + speed
+                    if (windowX >= totalScreenWidth - window.innerWidth) {
+                        Xdirection = 'left'
+                    }
+                }
+
+                requestAnimationFrame(moveWindow)
+            }
+
+            moveWindow()
+        }
+
+        
+        })
+
+        
+        
+
+        const captions = [
+            'I think its pretty fair that hot girls just get money for being pretty while you have to work all day, only for them to take it all away dont you think so simp?',
+            'why have a female-led relationship when you can have a female-led life ♡',
+            'would you mind if i degraded you and destroyed all your ego?~ ♡',
+            'seeing findom girls only on the internet wasnt enough for you so you had to let them take over your pc too~ 🤭',
+            'what? haha yeah no we are not a couple. he is just one of those losers who pay me to bully them ♡',
+            'me? manipulative? naaaahh i think ur just overthinking again ♡',
+            'shh~ calm down dummy~ just nuzzle your dumb face between my boobs and let it happen. youve already spent everything and there is no going back now good boy~ youll love hard drains from now on ♡',
+            'once you are locked up there is no going back~ ♡',
+            'so hard to get me out of your head 🤭',
+            'hmm should i wear ur chastity keys as a necklace or as an anklet~',
+            'can u really call urself successful if my panties are worth more than your whole life?',
+            'Remember simp~ The meaning of the word "collared" wasnt only physical ♡',
+            'Staying home and hate jerking your salary into my account feels so good doesnt it?',
+            'you lose, i win ♡',
+            'u know ur a loser when the word itself turns you on 🤭',
+            'Awh my poor little loser~ It was only $20 first, then $50 and now you are mindlessly sending without even thinking about it as you leak in your pants 💞',
+            'The collar and the cage might feel a bit too tight at first but dont worry~ Ill make you get used to it🤭',
+            'Is my hold on your life getting a bit too strong? Maybe you have a task to do, somewhere to go but do you really want to do them when you could be handing over your money.',
+            'You dont deserve a proper social life.You deserve a life where your best free time activity will be waiting for me to come online so I can milk more money out of you~💕',
+            'Hm? You werent expecting me to actually flush your keys after I caged you? Awh how unfortunate~',
+            'The cage is inevitable. You are only delaying it.',
+            'Mmm the feeling of inferiority~ All those hours of working just to see a girl flex on you and call you a loser🤭',
+            'Your name is not bad but I think "loser wallet #17" suits you more ♡',
+            'Getting caged is like the proper way to surrender honestly. Giving up all your willpower for your doms entertainment is like the hottest thing a sub can do.',
+            'Send everything thats left in your account and announce your surrender to findom💕',
+            'Tired after our little walk puppy~? Your hands hurt? Well dont expect me to let you walk like a proper human while you literally have a leash on your neck💞',
+            'Isnt it just so fun watching girls spend all your money like its nothing?🤭',
+            'Being a part of a girls simp farm really fits you💞 Keep rubbing yourself while she gets even more rich and successful💕💞',
+            'Doesnt it feel sooo good sacrificing your useless life to fund like %1 of mine?💕💞',
+            'Its so fun to be a girl sometimes lmao im collecting simps who pay me just because i talk🤭',
+            'Tell me which one is the most embarrassing~ The cage that keeps reminding you how much of a loser you are everytime your little nub tries getting hard again or the panties that cover your cage to make you look even more ridiculous🤭💞',
+            'Your rights? Oh too bad they are gone now~💕 The moment you said yes to chastity was basically your way of saying "I dont need my rights anymore please take them away"💞🤭',
+            'Doesnt it feel soo hot to feel the humiliation of willingly wasting your life for girls on the internet while they remind you how much of a loser you are?🤭',
+            'You being a loser is inevitable~ You were born this way.. no matter how hard you tried fighting back or how bad you tried quitting you know that your little nub gets excited way more than anything when u sense dominance in girls🤭',
+            'The urges grow stronger as you get weaker every single second~ You dont stand a chance against findom💞',
+            'Keep being this way loser~ Let girls colonize your brain and let them live a better life by sacrificing yours💞',
+            'Do not seek help~ Let findom consume your life and turn you into a mindless worker bee for eternity~💞',
+            'Do you really still think you are a normal person after realizing that I have the power to manipulate your whole body just by being me?💞',
+            'Everytime you promise yourself that youd quit..Everytime you deleted your accounts..What did they get you? Just more shame when you come crawling back.',
+            'Yes.. I know it might be a bit unfair that you had to give me your whole house and now have to pay rent to me just to watch the sunset with me but still.. wasnt it worth it?',
+            'Let everything slip away loser~ Let your savings, your pride, your freedom be taken away by a girl who is much better than you💞',
+            'It might be a bit embarrassing that you are forced to kneel in the middle of the gym and give me money every rep but i dont really care tbh💞',
+            'What is it simp? You thought you could touch me in anyway other than licking my feet? Hmm no.',
+            'Aww its that small? Hmm I dont think you really deserve any freedom with that size tbh🤭 Come closer loser~ Lets cage you up🔒💞',
+            'Do you think you can go back to ur normal life after meeting me slave? Nuh uh~',
+            'What is it slave? Being forced to wear a leash 24/7 feels embarrassing? Aww.. That must suck🤭',
+            'You just want to end up with a cage on your little thing and a leash on your neck to keep you immobilized forever~🎀',
+            'Forget about your freedom. You are no longer allowed to think or argue anymore~💞💖',
+            'You cant rebel anymore can you my little simp?💖That cage really blocks your feeling of "post nut clarity"🔒Well..You lost.Sophie won~💞Have fun being a mindless cashcow for the rest of your days🤭',
+            'You will be taxed for being a loser from now on aswell. The minuses in your bank account will keep reminding you that how much of a filthy dog you are.',
+            'You are my property now.. My brainless level 1 slut🎀Now wear this collar and go earn more xp for me to drain from you tonight~💕',
+            'Give in to your urges beta. Submit to findom and become financially en$laved.🎀',
+            'All your resistance has been broken, you are getting dumber and dumber as u watch yourself lose everything slowly. I have u on a leash.You dont get to think anymore~ Kiss my feet and enjoy your defeat🎀',
+            'Hand over your wallet and lets see how much Ive earned this weekend🤭 Good boy~Now get in your cage.I hope you have enough money for your rent this time.Im doubling your rent if you dont.💕',
+            'Do you ever look at yourself? Do you ever track how much time u spend gooning? Do you ever feel bad after seeing ur ding dong locked in a cage everytime you look down?💕Well too bad~You dont control your life anymore loser🎀',
+            'Where do you think you are going you dumb little dog~?💞🎀Forget about your freedom.You are no longer allowed to think or argue anymore~💕💖 Now get on your knees and say "Thank you for locking and collaring me Princess Sophie" ',
+            'Hi goony~ "Your" money looks a little ugly in your wallet dont you think ?💕 Get on your knees and start counting your cash at my feet while I spit on your ugly face~',
+            'Forget about your dreams of "financial freedom"🤭 You were born to send, rub yourself to the payment confirmation screen with the feeling of defeat and repeat~',
+            'Time to start rubbing yourself and watch me get rich while you lose everything only for pleasure💞 Kneel down and keep rubbing yourself with the pleasure of defeat~💕 You lost the moment you decided to DM me🔒🎀',
+            'Oh you think you can keep your money to yourself? Well not really simp.💖 You can and will keep sending until you are at the bottom💞 I want those minuses in your bank account. And after that you can kiss my heels and thank me~',
+            'You just love empowering women dont you? Giving away everything you have..your freedom, finances and power💞 Just to get locked in a cage, spat on and humiliated~ Go ahead then loser.Serve your purpose.',
+        ]
+        if (localStorage.getItem('sophiewareCaptionContent') == 'true') { document.getElementById('caption').innerHTML = captions[Math.floor(Math.random() * captions.length)] }
+    </script>
+</body>
+
+</html>
